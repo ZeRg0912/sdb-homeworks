@@ -1,0 +1,34 @@
+services:
+  mysql-master1:
+    build: ./master1
+    image: hw-mysql-master1:8.4
+    container_name: mysql-master1
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - master1_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  mysql-master2:
+    build: ./master2
+    image: hw-mysql-master2:8.4
+    container_name: mysql-master2
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - master2_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  master1_data:
+  master2_data:
