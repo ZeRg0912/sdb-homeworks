@@ -1,0 +1,121 @@
+version: '3.9'
+
+services:
+  mysql-shard1-primary:
+    image: mysql:8.4
+    container_name: mysql-shard1-primary
+    restart: unless-stopped
+    command:
+      - --server-id=11
+      - --log-bin=mysql-bin
+      - --binlog-format=ROW
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - "33061:3306"
+    volumes:
+      - shard1_primary_data:/var/lib/mysql
+      - ./sql/shard1-primary-init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+
+  mysql-shard1-replica:
+    image: mysql:8.4
+    container_name: mysql-shard1-replica
+    restart: unless-stopped
+    command:
+      - --server-id=12
+      - --log-bin=mysql-bin
+      - --relay-log=relay-bin
+      - --binlog-format=ROW
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+      - --read-only=ON
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - "33062:3306"
+    volumes:
+      - shard1_replica_data:/var/lib/mysql
+
+  mysql-shard2-primary:
+    image: mysql:8.4
+    container_name: mysql-shard2-primary
+    restart: unless-stopped
+    command:
+      - --server-id=21
+      - --log-bin=mysql-bin
+      - --binlog-format=ROW
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - "33063:3306"
+    volumes:
+      - shard2_primary_data:/var/lib/mysql
+      - ./sql/shard2-primary-init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+
+  mysql-shard2-replica:
+    image: mysql:8.4
+    container_name: mysql-shard2-replica
+    restart: unless-stopped
+    command:
+      - --server-id=22
+      - --log-bin=mysql-bin
+      - --relay-log=relay-bin
+      - --binlog-format=ROW
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+      - --read-only=ON
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - "33064:3306"
+    volumes:
+      - shard2_replica_data:/var/lib/mysql
+
+  mysql-shard3-primary:
+    image: mysql:8.4
+    container_name: mysql-shard3-primary
+    restart: unless-stopped
+    command:
+      - --server-id=31
+      - --log-bin=mysql-bin
+      - --binlog-format=ROW
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - "33065:3306"
+    volumes:
+      - shard3_primary_data:/var/lib/mysql
+      - ./sql/shard3-primary-init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+
+  mysql-shard3-replica:
+    image: mysql:8.4
+    container_name: mysql-shard3-replica
+    restart: unless-stopped
+    command:
+      - --server-id=32
+      - --log-bin=mysql-bin
+      - --relay-log=relay-bin
+      - --binlog-format=ROW
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+      - --read-only=ON
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - "33066:3306"
+    volumes:
+      - shard3_replica_data:/var/lib/mysql
+
+volumes:
+  shard1_primary_data:
+  shard1_replica_data:
+  shard2_primary_data:
+  shard2_replica_data:
+  shard3_primary_data:
+  shard3_replica_data:
